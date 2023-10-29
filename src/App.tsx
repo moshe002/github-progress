@@ -18,10 +18,10 @@ function App() {
   
   const currentYear = new Date().getFullYear();
 
-  const submitUsername = (e:React.SyntheticEvent) => {
+  const submitUsername = async (e:React.SyntheticEvent) => {
     e.preventDefault()
     try {
-      fetch(`https://api.github.com/users/${inputUsername}/repos`)
+      await fetch(`https://api.github.com/users/${inputUsername}/repos`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data)
@@ -30,6 +30,7 @@ function App() {
         getFollowers(data)
         mostUsedProgrammingLanguage(data)
         mostRecentRepo(data)
+        setDisplayOutput(true)
       })
       .catch((error) => {
         console.error(error)
@@ -37,7 +38,6 @@ function App() {
     } catch(error) {
       console.error('oh no!: ' + error)
     }
-    setDisplayOutput(true)
   }
 
   const filterReposData = (data:[]) => {
@@ -49,7 +49,7 @@ function App() {
     setReposThisYear(totalReposThisYear)
   }
 
-  const getUserProfilePhoto = (data:any) => { // change any to specific data type
+  const getUserProfilePhoto = (data:any) => { // change any to specific data type (a must haha)
     const profileURL = data[0].owner.avatar_url
     setProfileUrl(profileURL)
     //console.log(profileURL)
@@ -112,9 +112,9 @@ function App() {
   }
 
   return (
-    <div className='flex flex-col h-full p-5 bg-zinc-400'>
+    <div className='flex flex-col h-screen gap-10 p-5 bg-zinc-400 overflow-auto'>
       <h1 className='text-gray-600 text-center text-4xl font-bold'>Github Progress of the Year!</h1>
-      <div className='flex flex-col h-screen items-center justify-center gap-3'>
+      <div className='flex flex-col items-center gap-3'>
         <form onSubmit={e => submitUsername(e)} className='flex flex-col gap-5 text-center'>
           <label
             className='text-xl text-white font-semibold'
@@ -143,7 +143,7 @@ function App() {
             recentRepo={recentRepo} 
           />
         }
-      </div>  
+      </div> 
     </div>
   )
 }
