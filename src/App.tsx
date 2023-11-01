@@ -31,7 +31,9 @@ function App() {
       setIsLoading(true)
       await fetch(`https://api.github.com/users/${inputUsername}/repos?per_page=100`, {
         headers: {
-          Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
+          'Authorization': `token ${import.meta.env.VITE_GITHUB_TOKEN}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         }
       })
       .then((response) => response.json())
