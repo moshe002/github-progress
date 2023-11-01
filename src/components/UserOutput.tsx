@@ -3,20 +3,24 @@ import { toPng } from 'html-to-image';
 
 interface UserProps {
     username: string
+    totalRepos: number
     reposThisYear: number
     profileUrl: string
     followersCount: number
     language: string
     recentRepo: string
+    totalYearContri: number
 }
 
 const UserOutput = ({ 
         username, 
+        totalRepos,
         reposThisYear, 
         profileUrl, 
         followersCount,
         language,
-        recentRepo 
+        recentRepo,
+        totalYearContri
     }: UserProps) => {
 
   const ref = useRef<HTMLDivElement>(null)    
@@ -64,6 +68,9 @@ const UserOutput = ({
       case 'SCSS':
         setLanguageColor('text-pink-400')
         break
+      case 'Svelte':
+        setLanguageColor('text-orange-600')
+        break
       default:
         setLanguageColor('text-white')
     }
@@ -89,15 +96,20 @@ const UserOutput = ({
       <div ref={ref} className="flex flex-col w-auto gap-3 text-center bg-[url('./assets/github-logo.png')] bg-[length:65px_65px] items-center p-5 rounded-md bg-zinc-700 text-white">
         <h1 className='text-4xl font-semibold text-gray-300'>Your Github Year Wrapped!</h1>
         <div className='flex gap-3 text-center p-2'>
-          <div className='flex flex-col items-center justify-center bg-slate-700 h-full gap-3 p-5 rounded-md'>
-            <img className='w-28 h-28 rounded-full' src={profileUrl} alt="user_profile" />
-            <h1 className="text-2xl font-bold">{username}</h1>
-            <div className="flex flex-col gap-1">
-              <h1 className="text-sm">Recently created repository</h1>
-              <h1 className="text-2xl font-semibold text-green-500">{recentRepo}</h1>
+          <div className='flex flex-col items-center justify-center h-full gap-3 p-5 rounded-md'>
+            <div className='flex flex-col items-center justify-center bg-slate-700 gap-3 p-5 rounded-md'>
+              <img className='w-28 h-28 rounded-full' src={profileUrl} alt="user_profile" />
+              <h1 className="text-2xl font-bold">{username}</h1>
+              <div className="flex flex-col gap-1">
+                <h1 className="text-sm">Recently created repository</h1>
+                <h1 className="text-2xl font-semibold text-green-500">{recentRepo}</h1>
+              </div>
+            </div>
+            <div className='flex gap-3 p-5 justify-center rounded-md bg-slate-700 w-52'>
+              <h1 className='text-lg'><span className="text-green-500 font-bold">{totalRepos}</span> total repositories created!</h1>
             </div>
           </div>
-          <div className='flex flex-col items-center gap-5'>
+          <div className='flex flex-col p-5 items-center justify-between gap-5'>
             <div className='flex gap-3 p-5 justify-center rounded-md bg-slate-700 w-full'>
               <h1 className='w-52 text-xl'>Created <span className="text-green-500 font-bold">{reposThisYear}</span> repositories this year!</h1>
             </div>
@@ -110,7 +122,9 @@ const UserOutput = ({
             </div>
           </div>
         </div>
-        
+        <div className='bg-slate-700 rounded-md p-3 text-xl w-auto'>
+          <h1>Total Contributions this year: <span className="text-green-500 font-bold">{totalYearContri}</span></h1>
+        </div>
       </div>
       <button 
         type='button' 

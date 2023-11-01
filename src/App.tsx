@@ -17,6 +17,8 @@ function App() {
   const [followersCount, setFollowersCount] = useState<number>(0)
   const [language, setLanguage] = useState<string>('')
   const [recentRepo, setRecentRepo] = useState<string>('')
+  const [totalRepos, setTotalRepos] = useState<number>(0)
+  const [totalYearContri, setTotalYearContri] = useState<number>(0)
   const [displayOutput, setDisplayOutput] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<boolean>(false)
@@ -27,10 +29,11 @@ function App() {
     e.preventDefault()
     try {
       setIsLoading(true)
-      await fetch(`https://api.github.com/users/${inputUsername}/repos`)
+      await fetch(`https://api.github.com/users/${inputUsername}/repos?per_page=100`)
       .then((response) => response.json())
       .then((data) => {
         //console.log(data)
+        setTotalRepos(data.length)
         filterReposData(data)
         getUserProfilePhoto(data)
         getFollowers(data)
@@ -51,12 +54,13 @@ function App() {
     }
   }
 
-  const filterReposData = (data:[]) => {
+  const filterReposData = async (data:[]) => {
     const currentYearRepos = data.filter((repo:GithubDate) => {
       const repoYear = new Date(repo.created_at).getFullYear()
       return repoYear === currentYear
     })
     const totalReposThisYear = currentYearRepos.length
+    await totalContributions(currentYearRepos)
     setReposThisYear(totalReposThisYear)
   }
 
@@ -93,10 +97,8 @@ function App() {
         }
       }
     })
-
     let mostUsedLanguage = ""
     let maxCount = 0
-
     for (const language in languageCounts) {
       if (languageCounts[language] > maxCount) {
         mostUsedLanguage = language
@@ -107,10 +109,8 @@ function App() {
   } 
 
   const mostRecentRepo = (data:[]) => {
-
     let mostRecentRepo: any = null
     let mostRecentDate = new Date(0)
-
     data.forEach((repo:any) => {
       const createdDate = new Date(repo.created_at)
       if (createdDate > mostRecentDate) {
@@ -118,12 +118,32 @@ function App() {
         mostRecentRepo = repo
       }
     });
-
     if (mostRecentRepo) {
       setRecentRepo(mostRecentRepo.name)
     } else {
       setRecentRepo("No recent repositories.")
     }
+  }
+
+  const totalContributions = async (currentYearRepos:any[]) => {
+    let totalContri:number = 0
+    for (const repo of currentYearRepos) {
+      try {
+        const response = await fetch(repo.contributors_url)
+        if (response.ok) {
+          const contributors = await response.json()
+          for (const contributor of contributors) {
+            if (contributor.login === inputUsername) {
+              totalContri += contributor.contributions
+            }
+          }
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    //console.log(totalContri)
+    setTotalYearContri(totalContri)
   }
 
   return (
@@ -157,11 +177,13 @@ function App() {
           &&
           <UserOutput
             username={inputUsername}
+            totalRepos={totalRepos}
             reposThisYear={reposThisYear}
             profileUrl={profileUrl}
             followersCount={followersCount}
             language={language}
             recentRepo={recentRepo} 
+            totalYearContri={totalYearContri}
           />          
         }
       </div>
