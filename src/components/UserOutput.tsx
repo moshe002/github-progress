@@ -102,7 +102,7 @@ const UserOutput = ({
               <h1 className='w-52 text-xl'>Created <span className="text-green-500 font-bold">{reposThisYear}</span> repositories this year!</h1>
             </div>
             <div className='flex gap-3 p-5 justify-center rounded-md bg-slate-700 w-full'>
-              <h1 className='text-xl'>Has <span className="text-green-500 font-bold">{followersCount}</span> {followersCount == 1 ? 'follower' : 'followers'}</h1>
+              <h1 className='text-xl'>Has <span className="text-green-500 font-bold">{followersCount < 100 ? followersCount : '100+'}</span> {followersCount == 1 ? 'follower' : 'followers'}</h1>
             </div>
             <div className='flex flex-col gap-3 p-5 items-center rounded-md bg-slate-700 w-full'>
               <h1>Most used programming language</h1>

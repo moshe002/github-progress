@@ -69,9 +69,13 @@ function App() {
   const getFollowers = (data:any) => {
     try {
       const followersUrl = data[0].owner.followers_url
-      fetch(followersUrl)
+      //console.log(followersUrl + '?per_page=100')
+      fetch(followersUrl + '?per_page=200')
       .then(res => res.json())
-      .then(data => setFollowersCount(data.length))
+      .then(data => {
+        setFollowersCount(data.length)
+        //console.log(data.length)
+      })
     } catch(error) {
       console.error(error)
     }
