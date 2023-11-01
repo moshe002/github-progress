@@ -29,7 +29,11 @@ function App() {
     e.preventDefault()
     try {
       setIsLoading(true)
-      await fetch(`https://api.github.com/users/${inputUsername}/repos?per_page=100`)
+      await fetch(`https://api.github.com/users/${inputUsername}/repos?per_page=100`, {
+        headers: {
+          Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`
+        }
+      })
       .then((response) => response.json())
       .then((data) => {
         //console.log(data)
