@@ -31,9 +31,8 @@ function App() {
       setIsLoading(true)
       await fetch(`https://api.github.com/users/${inputUsername}/repos?per_page=100`, {
         headers: {
-          'Authorization': `token ${import.meta.env.VITE_GITHUB_TOKEN}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          Accept: 'application/json',
+          Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`,
         }
       })
       .then((response) => response.json())
@@ -80,7 +79,7 @@ function App() {
     try {
       const followersUrl = data[0].owner.followers_url
       //console.log(followersUrl + '?per_page=100')
-      fetch(followersUrl + '?per_page=200')
+      fetch(followersUrl + '?per_page=100')
       .then(res => res.json())
       .then(data => {
         setFollowersCount(data.length)
